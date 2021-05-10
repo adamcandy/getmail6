@@ -51,6 +51,7 @@ import poplib
 import imaplib
 import re
 import select
+from func_timeout import func_timeout, FunctionTimedOut
 
 try:
     # do we have a recent pykerberos?
@@ -601,12 +602,13 @@ class IMAPSSLinitMixIn(CertMixIn):
                 )
             else:
                 self.log.trace(
-                    'establishing IMAP SSL connection to %s:%d'
-                    % (self.conf['server'], self.conf['port']) + os.linesep
+                    'establishing IMAP SSL connection to %s:%d (with timeout %ds)'
+                    % (self.conf['server'], self.conf['port'], self.conf['timeout']) + os.linesep
                 )
-                self.conn = imaplib.IMAP4_SSL(self.conf['server'],
-                                              self.conf['port'])
+                self.conn = func_timeout(self.conf['timeout'], imaplib.IMAP4_SSL, args=(self.conf['server'], self.conf['port']) )
             ssl_cipher, actual_hash = self.ssl_cipher_hash()
+        except FunctionTimedOut as o:
+            raise getmailOperationError('IMAP connection timeout (%s)' % o)
         except imaplib.IMAP4.error as o:
             raise getmailOperationError('IMAP error (%s)' % o)
         except socket.timeout:
