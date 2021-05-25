@@ -2483,6 +2483,13 @@ localpart_translate = ('mailhostaccount-', '')
         number of bytes.  Default: 0, which means not to enable this feature.
     </li>
     <li>
+        skip_fetch_size
+        (<a href="#parameter-boolean">boolean</a>)
+        &mdash; if set, getmail will only request each mail's UID and skip also
+        fetching RFC822.SIZE.  This can speed up mail checks significantly,
+        particularly when getmail is interacting with davmail proxies.
+    </li>
+    <li>
         max_messages_per_session
         (<a href="#parameter-integer">integer</a>)
         &mdash; if set, getmail will process a maximum of this number of
