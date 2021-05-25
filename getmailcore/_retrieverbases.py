@@ -1431,12 +1431,17 @@ class IMAPRetrieverBase(RetrieverSkeleton):
 
     def _getmsglist(self, msgcount):
         self.log.trace()
+        fetch_size = not self.app_options['skip_fetch_size']
+        # Place logic here for further overrides from other options such as:
+        # max_message_size and possibly max_bytes_per_session, delete_bigger_than
+        # See https://github.com/getmail6/getmail6/issues/69 for discussion
+        if not fetch_size:
+            self.log.debug('Fetching only UID and not RFC822.SIZE, as a result of the override option skip_fetch_size')
         try:
             if msgcount:
                 # Get UIDs and sizes for all messages in mailbox
                 response = self._parse_imapcmdresponse(
-                    #'FETCH', '1:%d' % msgcount, '(UID RFC822.SIZE)'
-                    'FETCH', '1:%d' % msgcount, '(UID)'
+                    'FETCH', '1:%d' % msgcount, '(UID RFC822.SIZE)' if fetch_size else '(UID)'
                 )
                 for line in response:
                     if not line:
@@ -1452,8 +1457,10 @@ class IMAPRetrieverBase(RetrieverSkeleton):
                     self._mboxuids[msgid] = r['uid']
                     self._mboxuidorder.append(msgid)
                     self.msgnum_by_msgid[msgid] = None
-                    #self.msgsizes[msgid] = int(r['rfc822.size'])
-                    self.msgsizes[msgid] = 0
+                    if fetch_size:
+                        self.msgsizes[msgid] = int(r['rfc822.size'])
+                    else:
+                        self.msgsizes[msgid] = 0
 
             # Remove messages from state file that are no longer in mailbox,
             # but only if the timestamp for them are old (30 days for now).

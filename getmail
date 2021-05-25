@@ -45,6 +45,7 @@ options_bool = (
     'message_log_verbose',
     'message_log_syslog',
     'fingerprint',
+    'skip_fetch_size',
 )
 options_int = (
     'delete_after',
@@ -101,6 +102,7 @@ defaults = {
     'message_log_syslog' : False,
     'logfile' : None,
     'fingerprint' : False,
+    'skip_fetch_size' : False,
 }
 
 
@@ -660,6 +662,7 @@ def main():
                 'message_log_verbose' : defaults['message_log_verbose'],
                 'message_log_syslog' : defaults['message_log_syslog'],
                 'fingerprint' : defaults['fingerprint'],
+                'skip_fetch_size' : defaults['skip_fetch_size'],
             }
             # Python's ConfigParser .getboolean() couldn't handle booleans in
             # the defaults. Submitted a patch; they fixed it a different way.
