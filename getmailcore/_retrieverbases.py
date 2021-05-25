@@ -1437,7 +1437,8 @@ class IMAPRetrieverBase(RetrieverSkeleton):
             if msgcount:
                 # Get UIDs and sizes for all messages in mailbox
                 response = self._parse_imapcmdresponse(
-                    'FETCH', '1:%d' % msgcount, '(UID RFC822.SIZE)'
+                    #'FETCH', '1:%d' % msgcount, '(UID RFC822.SIZE)'
+                    'FETCH', '1:%d' % msgcount, '(UID)'
                 )
                 for line in response:
                     if not line:
@@ -1453,7 +1454,8 @@ class IMAPRetrieverBase(RetrieverSkeleton):
                     self._mboxuids[msgid] = r['uid']
                     self._mboxuidorder.append(msgid)
                     self.msgnum_by_msgid[msgid] = None
-                    self.msgsizes[msgid] = int(r['rfc822.size'])
+                    #self.msgsizes[msgid] = int(r['rfc822.size'])
+                    self.msgsizes[msgid] = 0
 
             # Remove messages from state file that are no longer in mailbox,
             # but only if the timestamp for them are old (30 days for now).
