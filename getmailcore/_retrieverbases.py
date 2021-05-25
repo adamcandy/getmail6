@@ -1436,12 +1436,15 @@ class IMAPRetrieverBase(RetrieverSkeleton):
         # max_message_size and possibly max_bytes_per_session, delete_bigger_than
         # See https://github.com/getmail6/getmail6/issues/69 for discussion
         if not fetch_size:
-            self.log.debug('Fetching only UID and not RFC822.SIZE, as a result of the override option skip_fetch_size')
+            self.log.debug('Fetching only UID and not RFC822.SIZE, as a result of'\
+                'the override option skip_fetch_size' + os.linesep)
         try:
             if msgcount:
                 # Get UIDs and sizes for all messages in mailbox
                 response = self._parse_imapcmdresponse(
-                    'FETCH', '1:%d' % msgcount, '(UID RFC822.SIZE)' if fetch_size else '(UID)'
+                    'FETCH',
+                    '1:%d' % msgcount,
+                    '(UID RFC822.SIZE)' if fetch_size else '(UID)'
                 )
                 for line in response:
                     if not line:
