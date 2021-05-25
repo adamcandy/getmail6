@@ -1439,7 +1439,7 @@ class IMAPRetrieverBase(RetrieverSkeleton):
         # See https://github.com/getmail6/getmail6/issues/69 for discussion
         if not fetch_size:
             self.log.debug('Fetching only UID and not RFC822.SIZE, as a result of'\
-                'the override option skip_fetch_size' + os.linesep)
+                ' the config option: skip_fetch_size' + os.linesep)
         try:
             if msgcount:
                 # Get UIDs and sizes for all messages in mailbox
